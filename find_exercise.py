@@ -56,6 +56,12 @@ def take_int_list_input(category_list, catergory_id_list, query_word):
 
 
 
+def print_list(my_list):
+    for i,item in enumerate(my_list):
+        print("{:02d}".format( i+1 ), '|  ', item)
+
+
+
 ## Main function
 if __name__ == '__main__':
     #Load data
@@ -97,11 +103,41 @@ if __name__ == '__main__':
     exercise_input_list = take_int_list_input(category_list, catergory_id_list,'exercise category')
     print(exercise_input_list)
 
+    print()
     print("Press ENTER to continue")
     input()
     
     #Take muscle category input from user
     muscle_input_list = take_int_list_input(muscle_list, muscle_id_list, 'muscle category')
     print(muscle_input_list)
+
+
+    print()
+    print("Press ENTER to continue")
+    input()
+
+
+    # Find out the exercises to show as output
+    output_exercise_list= [] #list to hold outputs
+    for exercise in exercises_language_2_list:
+        is_in_category = False
+        is_in_muscle = False
+
+        if exercise['fields']['category'] in exercise_input_list:
+            is_in_category = True
+        
+        for muscle in exercise['fields']['muscles']:
+            if muscle in muscle_input_list:
+                is_in_muscle = True
+
+        if is_in_category or is_in_muscle:
+            output_exercise_list.append(exercise['fields']['name'])
+            #print('Added', exercise['fields']['name'],' to output list')
+
+    # Print output 
+    print("Here is your list of exercises")
+    print()
+    print_list(output_exercise_list)
+
 
 
