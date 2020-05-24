@@ -1,5 +1,6 @@
 # Import packages
 import json
+from random import shuffle
 
 
 ## Function to read input
@@ -18,7 +19,9 @@ def take_int_list_input(category_list, catergory_id_list, query_word):
         #Print instructions for category
         print("---------------------------------------------------------------------")
         print("Please write the "+ query_word + " numbers. You can choose multiple " + query_word + " at a time. Separate them with COMMA(,)")
-        print("For example: 3,5,6 ")
+        shuffle(catergory_id_list)
+        
+        print("For example: " + str(catergory_id_list[0:3])[1:-1])
 
         #Ask for category input from user
         user_category_input = input("Select " + query_word + ": ")
@@ -88,6 +91,9 @@ if __name__ == '__main__':
     #Create catagories list
     category_list=[dict(id=x['pk'],option=str(x['pk'])+"_"+x['fields']['name']) 
                     for x in category_dict]
+    
+    # Sorting Category List
+    category_list.sort(key=lambda x:x['id'])
 
     catergory_id_list = [category['pk'] for category in category_dict]
 
@@ -95,6 +101,9 @@ if __name__ == '__main__':
     #Create muscles list
     muscle_list=[dict(id=x['pk'],option=str(x['pk'])+"_"+x['fields']['name']) 
                     for x in muscle_dict]
+    
+    # Sorting the sequence
+    muscle_list.sort(key=lambda x:x['id'])
 
     muscle_id_list= [muscle['pk'] for muscle in muscle_dict]
 
@@ -133,11 +142,22 @@ if __name__ == '__main__':
         if is_in_category or is_in_muscle:
             output_exercise_list.append(exercise['fields']['name'])
             #print('Added', exercise['fields']['name'],' to output list')
-
+    
+    bodyweight=input("Number of bodyweight exercises from[0-{}] =  ".format(str(len(bodyweight_dict))) )
+    try:
+        tn=int(bodyweight)
+        shuffle(bodyweight_dict)
+        bdwt=bodyweight_dict[0:tn]
+    except Exception as e:
+        print("Error ", e)
+        bdwt=[]
+    
+    output_exercise_list.extend(bdwt)
     # Print output 
     print("Here is your list of exercises")
     print()
     print_list(output_exercise_list)
+    
 
 
 
