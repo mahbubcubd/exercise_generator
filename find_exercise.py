@@ -8,6 +8,7 @@ def take_int_list_input(category_list, catergory_id_list, query_word):
     #initialize variables to take category input
     category_input_list = []
     break_category_loop = False
+    is_input_given = False
 
     while break_category_loop==False:
         #Print all the categories
@@ -21,44 +22,92 @@ def take_int_list_input(category_list, catergory_id_list, query_word):
         print("For example: 3,5,6 ")
 
         #Ask for category input from user
-        user_category_input = input("Select " + query_word + ": ")
+        user_category_input = input("Select " + query_word + "\nnumber from the above list\nor press ENTER to skip:\n")
         #print(user_category_input)
+        
+        #Check whether user gave an empty input
+        if user_category_input:
+            is_input_given = True
+        else:
+            is_input_given = False
 
         
         #------Handle category input here------------#
         try:
-            category_input_list = list(map( int, user_category_input.split(',')))
-            elements_to_remove= []
-            for i in category_input_list:
-                if i not in catergory_id_list:
-                    elements_to_remove.append(i)
-                    print(str(i), ' is not a valid category')
-            category_input_list = set(category_input_list)
-            elements_to_remove = set(elements_to_remove)
-            category_input_list = list(category_input_list-elements_to_remove)
+            if is_input_given:
+                category_input_list = list(map( int, user_category_input.split(',')))
+
+                elements_to_remove= []
+                for i in category_input_list:
+                    if i not in catergory_id_list:
+                        elements_to_remove.append(i)
+                        print(str(i), ' is not a valid category')
+                category_input_list = set(category_input_list)
+                elements_to_remove = set(elements_to_remove)
+                category_input_list = list(category_input_list-elements_to_remove)
+            else:
+                pass
 
         except Exception as e:
-            messeage = 'Enter valid '+ query_word +' numbers using comma seperation\n' + 'Exception : ' + str(e) + '\noccured while handling your input'  
+            messeage = 'Enter valid '+ query_word +' numbers using comma seperation\n\n' + 'Exception : ' + str(e) + '\noccured while handling your input' 
+            print()
+            print()
             print(messeage)
 
 
         
-        if len(category_input_list) == 0:
-            print("You have not entered any valid "+query_word+"\nPlease enter a valid "+query_word+"!")
+        if (len(category_input_list) == 0) and (is_input_given):
+            print("\nYou have not entered any valid "+query_word+"\nPlease enter a valid "+query_word+"!")
             print("Press ENTER to continue")
             input()
-            
+
+        elif (len(category_input_list) == 0) and (not is_input_given):
+            print()
+            print("You choose not a give a "+ query_word + " input")
+            break_category_loop = True
+
         else:
             break_category_loop = True
             
         #--------------------------------------------#
-    return category_input_list
+    return category_input_list, is_input_given
 
 
 
-def print_list(my_list):
-    for i,item in enumerate(my_list):
+def take_int_input(query_word):
+    break_input_loop = False
+
+    while not break_input_loop:
+        number_string = input("Select " + query_word)
+        is_input_given = False
+        
+        if number_string:
+            is_input_given = True
+        else:
+            is_input_given = False
+
+        try:
+            if is_input_given:
+                number = int(number_string)
+                break_input_loop = True
+            else:
+                number = 10000
+                break_input_loop = True
+            
+        except Exception as e:
+            message = "While handling your input\n an exception " + e + "occured\n\nPlease enter a valid integer number\n\n"
+            print(message)
+            input()
+            print('Press ENTER to continue\n')
+    
+    return number
+
+
+
+def print_list(my_list,max_output_number):        
+    for i,item in enumerate(my_list[:max_output_number]):
         print("{:02d}".format( i+1 ), '|  ', item)
+        
 
 
 
@@ -100,7 +149,8 @@ if __name__ == '__main__':
 
 
     #Take exercise category input from user
-    exercise_input_list = take_int_list_input(category_list, catergory_id_list,'exercise category')
+    exercise_input_list, _ = take_int_list_input(category_list, catergory_id_list,'exercise category')
+
     print(exercise_input_list)
 
     print()
@@ -108,7 +158,8 @@ if __name__ == '__main__':
     input()
     
     #Take muscle category input from user
-    muscle_input_list = take_int_list_input(muscle_list, muscle_id_list, 'muscle category')
+    muscle_input_list, _ = take_int_list_input(muscle_list, muscle_id_list, 'muscle category')
+    
     print(muscle_input_list)
 
 
@@ -116,6 +167,19 @@ if __name__ == '__main__':
     print("Press ENTER to continue")
     input()
 
+    #Ask user to give maximum number of output 
+    max_output_number = take_int_input("maximum number of exercises to show\nor press ENTER to skip:\n")
+    if max_output_number < 10000:
+        if max_output_number>1:
+            print("You will be shown maximum "+ str(max_output_number) + " exercises\n\n")
+        else:
+            print("You will be shown maximum "+ str(max_output_number) + " exercise\n\n")
+    else:
+        print("You will be shown all exercises \nthat meet your search criteria\n\n")
+
+    print("Press ENTER to continue")
+    input()
+    
 
     # Find out the exercises to show as output
     output_exercise_list= [] #list to hold outputs
@@ -137,7 +201,7 @@ if __name__ == '__main__':
     # Print output 
     print("Here is your list of exercises")
     print()
-    print_list(output_exercise_list)
+    print_list(output_exercise_list, max_output_number)
 
 
 
